@@ -1,4 +1,5 @@
 import 'package:galileo_mysql/galileo_mysql.dart';
+export 'package:galileo_mysql/galileo_mysql.dart' show ConnectionSettings;
 
 class FutureMYSQL {
   FutureMYSQL({required this.dbsettings});

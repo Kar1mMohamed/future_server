@@ -1,3 +1,7 @@
+## 1.0.4
+
+- Some fixes
+
 ## 1.0.3
 
 - Some fixes
