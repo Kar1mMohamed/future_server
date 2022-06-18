@@ -1,5 +1,5 @@
 name: future_server
-version: 1.0.1
+version: 1.0.2
 description: future_server.
 environment: 
   sdk: '>=2.4.0 <3.0.0'
