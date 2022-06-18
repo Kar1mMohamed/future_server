@@ -15,7 +15,7 @@ dependencies:
   future_get_server:
 ```
 
-Import get in files that it will be used:
+Import future_server in files that it will be used:
 
 ```dart
 import 'package:future_get_server/future_server.dart';
