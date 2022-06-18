@@ -1,6 +1,6 @@
-name: future_get_server
+name: future_server
 version: 1.0.0
-description: future_get_server.
+description: future_server.
 environment: 
   sdk: '>=2.4.0 <3.0.0'
 
