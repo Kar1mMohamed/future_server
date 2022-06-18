@@ -1,0 +1,13 @@
+name: future_get_server
+version: 1.0.0
+description: future_get_server.
+environment: 
+  sdk: '>=2.4.0 <3.0.0'
+
+dependencies: 
+  get_server: 1.1.1
+
+dev_dependencies: 
+  lints: ^2.0.0
+  test: ^1.16.0
+
