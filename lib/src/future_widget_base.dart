@@ -8,7 +8,7 @@ class FutureWidget extends SenderWidget {
   Widget build(BuildContext context) {
     future.then(
       (value) {
-        context.request.response.send(value);
+        context.request.response!.send(value);
       },
     );
     return WidgetEmpty();
