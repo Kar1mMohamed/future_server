@@ -65,4 +65,4 @@ class HomeView extends GetView<HomeController> {
 Now the server will return a 'Done' after 3 seconds.
 
 Please read get_server guide to understand what we are talking about
-https://pub.dev/packages/get_server# future_get_server
+https://pub.dev/packages/get_server#
