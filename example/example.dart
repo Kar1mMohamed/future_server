@@ -1,4 +1,4 @@
-import 'package:future_server/future_get_server.dart';
+import 'package:future_server/future_server.dart';
 import 'package:get_server/get_server.dart';
 
 void main() async {

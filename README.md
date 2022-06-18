@@ -18,7 +18,7 @@ dependencies:
 Import get in files that it will be used:
 
 ```dart
-import 'package:future_get_server/future_get_server.dart';
+import 'package:future_get_server/future_server.dart';
 ```
 
 But, what if you want to make the server wait untill you get the data from somewhere like firebase or MYSQL ?
