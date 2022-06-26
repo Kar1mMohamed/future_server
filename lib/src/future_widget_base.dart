@@ -1,4 +1,5 @@
-import 'package:get_server/get_server.dart';
+import 'package:get_server/get_server.dart'
+    show SenderWidget, Widget, BuildContext, WidgetEmpty;
 
 class FutureWidget extends SenderWidget {
   FutureWidget(this.future);

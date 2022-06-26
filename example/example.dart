@@ -1,8 +1,10 @@
 import 'package:future_server/future_server.dart';
-import 'package:get_server/get_server.dart';
 
 void main() async {
-  runApp(GetServer(
+  // runApp(GetServer(
+  //   home: HomeView(),
+  // ));
+  runApp(FutureServer(
     home: HomeView(),
   ));
 }

@@ -1,3 +1,9 @@
+## 1.0.5
+
+- Some fixes
+- Add log file (Now you can log events happened on the server)
+- More power to MYSQL commands
+
 ## 1.0.4
 
 - Some fixes
