@@ -16,4 +16,4 @@ dev_dependencies:
 repository: https://github.com/Kar1mMohamed/future_server
 
 dart:
-  plugin:
+  package:
