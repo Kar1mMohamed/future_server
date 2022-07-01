@@ -61,5 +61,42 @@ class HomeView extends GetView<HomeController> {
 ```
 Now the server will return a 'Done' after 3 seconds.
 
+
+But what if you want to use MSQL
+ first you need to define settings
+
+```dart
+final dbSettings = ConnectionSettings(
+    host: 'localhost',
+    port: 3306,
+    user: 'test',
+    password: 'testpassowrd',
+    db: 'test1');
+
+final futureMYSQL = FutureMYSQL(dbsettings: dbSettings);
+```
+
+if you wonder how to use it .. here is it
+
+```dart
+  var fetch = await  futureMYSQL.futureFetch(fields: [], table: 'users');
+```
+
+This will fetch a fields in table users
+
+ you can select fields by add them to the list --> futureMYSQL.futureFetch(fields: ['username','email'], table: 'users');
+
+ You can also fetch user where id
+
+ ```dart
+   var results = await futureMYSQL.futureFetchWhere(
+          fields: [],
+          whereFields: ['id'],
+          table: 'profiles',
+          whereFieldsValues: ['1'],
+        );
+```
+
+
 Please read get_server guide to understand what we are talking about
 https://pub.dev/packages/get_server#
