@@ -1,4 +1,4 @@
-# Future Server (get_server)
+# Future Server
 
 Please note you must read get_server guide to continue
 
@@ -21,7 +21,9 @@ Import future_server in files that it will be used:
 import 'package:future_get_server/future_server.dart';
 ```
 
-But, what if you want to make the server wait untill you get the data from somewhere like firebase or MYSQL ?
+### Future Server
+
+What if you want to make the server wait untill you get the data from somewhere like firebase or MYSQL ?
 
 Let me show you ..
 

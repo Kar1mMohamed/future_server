@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Some fixes
+
 ## 1.0.5
 
 - Some fixes
