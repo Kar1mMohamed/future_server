@@ -1,5 +1,5 @@
 name: future_server
-version: 1.1.1
+version: 1.1.1+1
 description: future_server is package based on several packages make a new gate to back-end development using dart .. it's a new opputunity to build back-end with dart just with future_server.
 environment: 
   sdk: '>=2.12.0 <3.0.0'
