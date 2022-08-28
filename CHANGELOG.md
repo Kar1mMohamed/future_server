@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Fix Method "OPTIONS"
+
 ## 1.1.0
 
 - Some fixes

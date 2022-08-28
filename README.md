@@ -35,7 +35,7 @@ To create a server, and send a plain text:
 ```dart
 void main() {
   runApp(
-    GetServerApp(
+    FutureServer(
       home: Home(),
     ),
   );

@@ -7,6 +7,7 @@ class FutureWidget extends SenderWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.request.method == 'OPTIONS') return WidgetEmpty();
     future.then(
       (value) {
         context.request.response!.send(value);
