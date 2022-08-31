@@ -1,5 +1,9 @@
 ## 1.1.2
 
+- Some fixes
+
+## 1.1.2
+
 - Add FutureFile
 
 ## 1.1.1+2

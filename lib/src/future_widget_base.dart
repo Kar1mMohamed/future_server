@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:get_server/get_server.dart'
     show SenderWidget, Widget, BuildContext, WidgetEmpty;
 
@@ -28,7 +26,11 @@ class _BaseFuturerWidget extends SenderWidget {
       (value) {
         print(value.runtimeType);
         var finalValue = value;
-        if (value is String) finalValue = {'msg': value};
+        if (value is String) {
+          finalValue = {'msg': value};
+          context.request.response!.sendJson(finalValue);
+          return;
+        }
         if (value is Map<dynamic, dynamic>) {
           context.request.response!.sendJson(finalValue);
           return;

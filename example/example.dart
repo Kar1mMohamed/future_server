@@ -52,6 +52,7 @@ class HomeController extends GetxController {
         resp = 'error';
         return resp;
       } finally {
+        // ignore: control_flow_in_finally
         return resp;
       }
     } else {

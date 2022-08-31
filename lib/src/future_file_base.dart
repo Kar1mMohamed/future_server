@@ -8,7 +8,7 @@ class FutureFile {
   Future<Uint8List> getBytes() => file.readAsBytes();
   Future<String> getString() => file.readAsString();
 
-  Future sendFile() async {
+  Future<Stream<List<int>>> sendFile() async {
     return await file.openRead().pipe(request.response);
   }
 }
