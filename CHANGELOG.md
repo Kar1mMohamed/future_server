@@ -1,3 +1,7 @@
+## 1.1.2
+
+- Add FutureFile
+
 ## 1.1.1+2
 
 - Fix Method "OPTIONS"

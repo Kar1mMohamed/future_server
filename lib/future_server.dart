@@ -6,3 +6,4 @@ library future_server;
 export 'src/future_widget_base.dart';
 export 'src/mysql_base.dart';
 export 'src/future_server_base.dart';
+export 'src/future_file_base.dart';
