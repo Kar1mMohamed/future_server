@@ -1,3 +1,8 @@
+## 1.2.0
+
+- Update dependencies
+- Add suport for Hive databases
+
 ## 1.1.2
 
 - Some fixes

@@ -2,6 +2,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:future_server/src/hive/open_boxes.dart';
+import 'package:future_server/src/hive/register_adapter.dart';
+import 'package:hive/hive.dart';
+
 import '../future_server.dart';
 export 'package:get_server/get_server.dart';
 import 'dart:developer' as developer;
@@ -49,6 +53,10 @@ class FutureServerApp extends GetServerApp {
     isLogEnable = true,
     jwtKey,
     home,
+    bool? useHive,
+    String? hivePath,
+    RegisterHives? registerHives,
+    OpenBoxex? openBoxex,
   })  : controller = Get.put(FutureServerController(
           host: host,
           port: port,
@@ -65,6 +73,10 @@ class FutureServerApp extends GetServerApp {
           home: home,
           initialBinding: initialBinding,
           getPages: getPages,
+          useHive: useHive ?? false,
+          hivePath: hivePath,
+          registerHives: registerHives,
+          openBoxex: openBoxex,
         )),
         super(key: key);
 
@@ -90,6 +102,10 @@ class FutureServer extends FutureServerApp {
     Widget? home,
     Bindings? initialBinding,
     List<GetPage>? futurePages,
+    bool? useHive,
+    String? hivePath,
+    RegisterHives? registerHives,
+    OpenBoxex? openBoxex,
   }) : super(
           key: key,
           host: host,
@@ -107,6 +123,9 @@ class FutureServer extends FutureServerApp {
           home: home,
           initialBinding: initialBinding,
           getPages: futurePages,
+          hivePath: hivePath,
+          registerHives: registerHives,
+          openBoxex: openBoxex,
         );
 }
 
@@ -127,6 +146,10 @@ class FutureServerController extends GetServerController {
     required this.home,
     required this.initialBinding,
     required this.getPages,
+    required this.useHive,
+    this.hivePath,
+    this.registerHives,
+    this.openBoxex,
   }) : super(
             host: host,
             port: port,
@@ -173,6 +196,11 @@ class FutureServerController extends GetServerController {
   @override
   final List<GetPage>? getPages;
 
+  bool useHive;
+  String? hivePath;
+  RegisterHives? registerHives;
+  OpenBoxex? openBoxex;
+
   List<GetPage>? _getPages;
   HttpServer? _server;
   VirtualDirectory? _virtualDirectory;
@@ -199,6 +227,11 @@ class FutureServerController extends GetServerController {
     }
 
     await startServer();
+
+    if (useHive) {
+      Hive.init(hivePath ?? Directory.current.path);
+      registerHives?.registerAdapters();
+    }
 
     return Future.value(this);
   }

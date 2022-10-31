@@ -24,7 +24,6 @@ class _BaseFuturerWidget extends SenderWidget {
   Widget build(BuildContext context) {
     future.then(
       (value) {
-        print(value.runtimeType);
         var finalValue = value;
         if (value is String) {
           finalValue = {'msg': value};
