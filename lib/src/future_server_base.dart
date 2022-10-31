@@ -231,6 +231,7 @@ class FutureServerController extends GetServerController {
     if (useHive) {
       Hive.init(hivePath ?? Directory.current.path);
       registerHives?.registerAdapters();
+      openBoxex?.openBoxex();
     }
 
     return Future.value(this);
