@@ -1,5 +1,9 @@
 ## 1.2.0
 
+- FIXES
+
+## 1.2.0
+
 - Update dependencies
 - Add suport for Hive databases
 
