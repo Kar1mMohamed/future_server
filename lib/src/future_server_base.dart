@@ -123,6 +123,7 @@ class FutureServer extends FutureServerApp {
           home: home,
           initialBinding: initialBinding,
           getPages: futurePages,
+          useHive: useHive ?? false,
           hivePath: hivePath,
           registerHives: registerHives,
           openBoxex: openBoxex,
@@ -230,6 +231,7 @@ class FutureServerController extends GetServerController {
 
     if (useHive) {
       Hive.init(hivePath ?? Directory.current.path);
+      fs.log('Hive initialized');
       registerHives?.registerAdapters();
       openBoxex?.openBoxex();
     }
