@@ -227,14 +227,15 @@ class FutureServerController extends GetServerController {
       RouteConfig.i.addRoutes(_getPages!);
     }
 
-    await startServer();
-
     if (useHive) {
       Hive.init(hivePath ?? Directory.current.path);
       fs.log('Hive initialized');
       registerHives?.registerAdapters();
       openBoxex?.openBoxex();
+      await Future.delayed(const Duration(seconds: 1));
     }
+
+    await startServer();
 
     return Future.value(this);
   }
