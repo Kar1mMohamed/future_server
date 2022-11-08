@@ -9,3 +9,4 @@ export 'src/future_server_base.dart';
 export 'src/future_file_base.dart';
 export 'src/hive/open_boxes.dart';
 export 'src/hive/register_adapter.dart';
+export 'package:hive/hive.dart';

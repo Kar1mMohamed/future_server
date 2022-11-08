@@ -1,5 +1,7 @@
-import 'package:get_server/get_server.dart'
-    show SenderWidget, Widget, BuildContext, WidgetEmpty;
+import 'dart:developer';
+
+import 'package:future_server/src/future_server_base.dart'
+    show SenderWidget, BuildContext, Method, Widget, Text, WidgetEmpty;
 
 class FutureWidget extends SenderWidget {
   FutureWidget(this.future);
@@ -8,10 +10,10 @@ class FutureWidget extends SenderWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (context.request.method != 'OPTIONS') {
-      return _BaseFuturerWidget(future);
-    } else {
+    if (context.request.method == 'OPTIONS') {
       return WidgetEmpty();
+    } else {
+      return _BaseFuturerWidget(future);
     }
   }
 }
