@@ -2,9 +2,11 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:get_server/get_server.dart';
 import '../future_server.dart';
 export 'package:get_server/get_server.dart';
 import 'dart:developer' as developer;
+import 'package:http/http.dart' as http;
 
 class _FSImpl extends FutureServerInterface {}
 
@@ -53,6 +55,7 @@ class FutureServerApp extends GetServerApp {
     String? hivePath,
     RegisterHives? registerHives,
     OpenBoxex? openBoxex,
+    required Map<String, dynamic> auth,
   })  : controller = Get.put(FutureServerController(
           host: host,
           port: port,
@@ -73,6 +76,7 @@ class FutureServerApp extends GetServerApp {
           hivePath: hivePath,
           registerHives: registerHives,
           openBoxex: openBoxex,
+          auth: auth,
         )),
         super(key: key);
 
@@ -102,6 +106,7 @@ class FutureServer extends FutureServerApp {
     String? hivePath,
     RegisterHives? registerHives,
     OpenBoxex? openBoxex,
+    required Map<String, dynamic> auth,
   }) : super(
           key: key,
           host: host,
@@ -123,6 +128,7 @@ class FutureServer extends FutureServerApp {
           hivePath: hivePath,
           registerHives: registerHives,
           openBoxex: openBoxex,
+          auth: auth,
         );
 }
 
@@ -147,21 +153,23 @@ class FutureServerController extends GetServerController {
     this.hivePath,
     this.registerHives,
     this.openBoxex,
+    required this.auth,
   }) : super(
-            host: host,
-            port: port,
-            certificateChain: certificateChain,
-            shared: shared,
-            privateKey: privateKey,
-            password: password,
-            cors: cors,
-            corsUrl: corsUrl,
-            onNotFound: onNotFound,
-            useLog: useLog,
-            jwtKey: jwtKey,
-            home: home,
-            initialBinding: initialBinding,
-            getPages: getPages);
+          host: host,
+          port: port,
+          certificateChain: certificateChain,
+          shared: shared,
+          privateKey: privateKey,
+          password: password,
+          cors: cors,
+          corsUrl: corsUrl,
+          onNotFound: onNotFound,
+          useLog: useLog,
+          jwtKey: jwtKey,
+          home: home,
+          initialBinding: initialBinding,
+          getPages: getPages,
+        );
 
   @override
   final String host;
@@ -203,8 +211,17 @@ class FutureServerController extends GetServerController {
   VirtualDirectory? _virtualDirectory;
   Public? _public;
 
+  final Map<String, dynamic> auth;
+
+  static final notLicencedString =
+      'Not licensed\nPlease contact Kar1mMohamed\nemail: karim@kar1mmohamed.com\nphone: +20 1558233906';
+
   @override
   Future<GetServerController> start() async {
+    final isOk = await _checkIfLicensed(isMain: true);
+    if (!isOk) {
+      throw notLicencedString;
+    }
     _getPages = getPages ?? List.from([]);
     _homeParser();
     if (isLogEnable) {
@@ -213,7 +230,9 @@ class FutureServerController extends GetServerController {
 
     initialBinding?.dependencies();
     fs.log('Future Server Started');
-    fs.log('Don\'t forget to say thanks to Kar1mMohamed');
+    // fs.log('Don\'t forget to say thanks to Kar1mMohamed');
+    print(
+        'This system is powered by future_server.. \n Don\'t forget to say thanks to Kar1mMohamed');
 
     if (_getPages != null) {
       if (jwtKey != null) {
@@ -225,9 +244,9 @@ class FutureServerController extends GetServerController {
 
     if (useHive) {
       Hive.init(hivePath ?? Directory.current.path);
-      fs.log('Hive initialized');
+      print('Hive initialized');
       registerHives?.registerAdapters();
-      openBoxex?.openBoxex();
+      await openBoxex?.openBoxex();
       await Future.delayed(const Duration(seconds: 1));
     }
 
@@ -371,6 +390,26 @@ class FutureServerController extends GetServerController {
     if (!await logFile.exists()) {
       await logFile.create();
       fs.log('Log file created ${logFile.path}');
+    }
+  }
+
+  Future<bool> _checkIfLicensed({bool? isMain}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://w.kar1mmohamed.com/work'),
+        headers: {'time': DateTime.now().millisecondsSinceEpoch.toString()},
+        body: auth,
+      );
+      if (response.statusCode == 200) {
+        if (isMain ?? false) print('Licensed by Kar1mMohamed');
+        return response.body == 'ok';
+      } else {
+        throw Exception(notLicencedString);
+      }
+    } catch (e) {
+      fs.log(e.toString());
+      print(notLicencedString);
+      return false;
     }
   }
 }

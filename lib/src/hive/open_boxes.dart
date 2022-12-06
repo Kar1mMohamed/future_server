@@ -1,3 +1,3 @@
 abstract class OpenBoxex {
-  void openBoxex();
+  Future<void> openBoxex();
 }

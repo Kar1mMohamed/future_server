@@ -9,6 +9,7 @@ dependencies:
   get_server: ^1.2.1
   galileo_mysql: ^3.0.0
   hive: ^2.2.3
+  http: ^0.13.5
 
 dev_dependencies: 
   lints: ^2.0.0
