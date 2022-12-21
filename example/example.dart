@@ -7,7 +7,7 @@ void main() async {
   // runApp(GetServer(
   //   home: HomeView(),
   // ));
-  runApp(FutureServer(home: HomeView(), auth: {}));
+  runApp(FutureServer(home: HomeView()));
 }
 
 class HomeView extends GetView<HomeController> {
