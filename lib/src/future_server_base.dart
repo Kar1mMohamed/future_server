@@ -2,11 +2,12 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:future_server/src/authentication_system/future_auth/bindings/future_auth_binding.dart';
+import 'package:future_server/src/authentication_system/future_auth/response/future_auth_response.dart';
 import 'package:get_server/get_server.dart';
 import '../future_server.dart';
 export 'package:get_server/get_server.dart';
 import 'dart:developer' as developer;
-import 'package:http/http.dart' as http;
 
 class _FSImpl extends FutureServerInterface {}
 
@@ -27,6 +28,25 @@ abstract class FutureServerInterface {
       openwrite.close();
     }
   }
+
+  Server? _server;
+
+  void setServer(Server server) => _setServer(server);
+
+  void runServer() => _runServer(_server);
+
+  bool debugMode = false;
+}
+
+void _runServer(Server? server) {
+  if (server == null) {
+    throw Exception('Server is null');
+  }
+  runApp(server.serverConfiguration);
+}
+
+void _setServer(Server server) {
+  fs._server = server;
 }
 
 void defaultLogWriterCallback(String value, {bool isError = false}) {
@@ -42,7 +62,7 @@ class FutureServerApp extends GetServerApp {
     privateKey,
     password,
     shared = true,
-    getPages,
+    List<FutureRoute>? futurePages,
     cors = false,
     corsUrl = '*',
     onNotFound,
@@ -55,6 +75,7 @@ class FutureServerApp extends GetServerApp {
     String? hivePath,
     RegisterHives? registerHives,
     OpenBoxex? openBoxex,
+    bool? useIntegretedAuthenticationSystem,
   })  : controller = Get.put(FutureServerController(
           host: host,
           port: port,
@@ -70,62 +91,18 @@ class FutureServerApp extends GetServerApp {
           jwtKey: jwtKey,
           home: home,
           initialBinding: initialBinding,
-          getPages: getPages,
+          futurePages: futurePages,
           useHive: useHive ?? false,
           hivePath: hivePath,
           registerHives: registerHives,
           openBoxex: openBoxex,
+          useIntegretedAuthenticationSystem:
+              useIntegretedAuthenticationSystem ?? false,
         )),
         super(key: key);
 
   @override
   final GetServerController controller;
-}
-
-class FutureServer extends FutureServerApp {
-  FutureServer({
-    Key? key,
-    String host = '0.0.0.0',
-    int port = 8080,
-    String? certificateChain,
-    bool shared = true,
-    String? privateKey,
-    String? password,
-    bool cors = false,
-    String corsUrl = '*',
-    Widget? onNotFound,
-    bool useLog = true,
-    bool isLogEnable = true,
-    String? jwtKey,
-    Widget? home,
-    Bindings? initialBinding,
-    List<GetPage>? futurePages,
-    bool? useHive,
-    String? hivePath,
-    RegisterHives? registerHives,
-    OpenBoxex? openBoxex,
-  }) : super(
-          key: key,
-          host: host,
-          port: port,
-          certificateChain: certificateChain,
-          shared: shared,
-          privateKey: privateKey,
-          password: password,
-          cors: cors,
-          corsUrl: corsUrl,
-          onNotFound: onNotFound,
-          useLog: useLog,
-          isLogEnable: isLogEnable,
-          jwtKey: jwtKey,
-          home: home,
-          initialBinding: initialBinding,
-          getPages: futurePages,
-          useHive: useHive ?? false,
-          hivePath: hivePath,
-          registerHives: registerHives,
-          openBoxex: openBoxex,
-        );
 }
 
 class FutureServerController extends GetServerController {
@@ -144,11 +121,12 @@ class FutureServerController extends GetServerController {
     required this.jwtKey,
     required this.home,
     required this.initialBinding,
-    required this.getPages,
+    required this.futurePages,
     required this.useHive,
     this.hivePath,
     this.registerHives,
     this.openBoxex,
+    this.useIntegretedAuthenticationSystem = true,
   }) : super(
           host: host,
           port: port,
@@ -163,7 +141,7 @@ class FutureServerController extends GetServerController {
           jwtKey: jwtKey,
           home: home,
           initialBinding: initialBinding,
-          getPages: getPages,
+          getPages: null,
         );
 
   @override
@@ -193,15 +171,16 @@ class FutureServerController extends GetServerController {
   final Widget? home;
   @override
   final Bindings? initialBinding;
-  @override
-  final List<GetPage>? getPages;
 
-  bool useHive;
-  String? hivePath;
-  RegisterHives? registerHives;
-  OpenBoxex? openBoxex;
+  final List<GetPage>? futurePages;
 
-  List<GetPage>? _getPages;
+  final bool useHive;
+  final String? hivePath;
+  final RegisterHives? registerHives;
+  final OpenBoxex? openBoxex;
+  final bool useIntegretedAuthenticationSystem;
+
+  List<GetPage>? _futurePages;
   HttpServer? _server;
   VirtualDirectory? _virtualDirectory;
   Public? _public;
@@ -211,7 +190,24 @@ class FutureServerController extends GetServerController {
 
   @override
   Future<GetServerController> start() async {
-    _getPages = getPages ?? List.from([]);
+    _futurePages = (futurePages ?? getPages) ?? List.from([]);
+
+    if (useIntegretedAuthenticationSystem) {
+      fs.log('Integreted Authentication System is enabled');
+      _futurePages ??= [];
+
+      _futurePages!.add(
+        FutureRoute(
+          name: '/future-auth',
+          response: () => FutureAuthResponse(),
+          binding: FutureAuthBinding(),
+          method: Method.dynamic,
+        ),
+      );
+
+      fs.log('Future Auth added to routes');
+    }
+
     _homeParser();
     if (isLogEnable) {
       createLogFile();
@@ -223,13 +219,28 @@ class FutureServerController extends GetServerController {
     print(
         'This system is powered by future_server.. \n Don\'t forget to say thanks to Kar1mMohamed');
 
-    if (_getPages != null) {
+    if (_futurePages != null) {
       if (jwtKey != null) {
         TokenUtil.saveJwtKey(jwtKey!);
       }
 
-      RouteConfig.i.addRoutes(_getPages!);
+      RouteConfig.i.addRoutes(_futurePages!);
     }
+    // else {
+    //   var modulesDirectory = Directory('server/modules');
+    //   if (!await modulesDirectory.exists()) {
+    //     throw Exception('Modules directory not found');
+    //   }
+    //   var modules = modulesDirectory.listSync();
+    //   for (var module in modules) {
+    //     var moduleName = module.path.split('/').last;
+    //     var response = File('${module.path}/${moduleName}_response.dart');
+    //     var binding = File('${module.path}/${moduleName}_binding.dart');
+    //     var controller = File('${module.path}/${moduleName}_controller.dart');
+
+    //     var route = '/$moduleName';
+    //   }
+    // }
 
     if (useHive) {
       Hive.init(hivePath ?? Directory.current.path);
@@ -281,7 +292,14 @@ class FutureServerController extends GetServerController {
           }
         }
         if (route != null) {
-          route.handle(req);
+          var authHeader = req.headers['authorization']?[0];
+          if (authHeader != null) {
+            _authenticatedRouteHandler(req, route, authHeader);
+          } else {
+            route.handle(req);
+          }
+
+          // route.handle(req);
         } else {
           if (_public != null) {
             _virtualDirectory ??= VirtualDirectory(
@@ -314,6 +332,38 @@ class FutureServerController extends GetServerController {
     );
   }
 
+  void _authenticatedRouteHandler(
+      HttpRequest req, Route route, String authHeader) {
+    try {
+      var token = authHeader.split(' ')[1];
+      var claim = TokenUtil.getClaims(token);
+      var scopes = _getScsopes(claim);
+      if (scopes.contains(req.requestedUri.path)) {
+        route.handle(req);
+      } else {
+        fs.log('not allowed');
+        _onTokenNotAllowed(req);
+      }
+    } catch (e) {
+      fs.log('[Authentcation] $e');
+      _onTokenNotAllowed(req);
+    }
+  }
+
+  List<String> _getScsopes(JwtClaim claim) {
+    var scopes = <String>[];
+
+    if (claim.audience != null) {
+      return claim.audience!;
+    }
+
+    scopes = claim.payload['scopes'] != null
+        ? claim.payload['scopes'] as List<String>
+        : [];
+
+    return scopes;
+  }
+
   Future<HttpServer> _getHttpServer() {
     if (privateKey != null) {
       var context = SecurityContext();
@@ -342,7 +392,7 @@ class FutureServerController extends GetServerController {
         jailRoot: _home.jailRoot,
       );
     } else {
-      _getPages?.add(GetPage(name: '/', page: () => home));
+      _futurePages?.add(GetPage(name: '/', page: () => home));
     }
   }
 
@@ -367,12 +417,41 @@ class FutureServerController extends GetServerController {
     }
   }
 
+  void _onTokenNotAllowed(HttpRequest req) {
+    Route(
+      Method.get,
+      RouteParser.normalize(req.uri.toString()),
+      Json({
+        'status': 'error',
+        'message': 'You don\'t have permission to access this route',
+      }),
+    ).handle(req, status: HttpStatus.unauthorized);
+  }
+
   @override
   void pageNotFound(HttpRequest req) {
     req.response
       ..statusCode = HttpStatus.notFound
       ..close();
   }
+
+  void internalServerError(HttpRequest req) {
+    req.response
+      ..statusCode = HttpStatus.internalServerError
+      ..close();
+  }
+
+  void unauthorized(HttpRequest req) {
+    req.response
+      ..statusCode = HttpStatus.unauthorized
+      ..close();
+  }
+
+  // void pageNotAllowed(HttpRequest req) {
+  //   req.response
+  //     ..statusCode = HttpStatus.unauthorized
+  //     ..close();
+  // }
 
   void createLogFile() async {
     File logFile = File('log.txt');

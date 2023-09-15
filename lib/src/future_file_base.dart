@@ -1,14 +1,14 @@
-import 'dart:io';
-import 'dart:typed_data';
+// import 'dart:io';
+// import 'dart:typed_data';
 
-class FutureFile {
-  FutureFile(this.file, this.request);
-  final File file;
-  final HttpRequest request;
-  Future<Uint8List> getBytes() => file.readAsBytes();
-  Future<String> getString() => file.readAsString();
+// class FutureFile {
+//   FutureFile(this.file, this.request);
+//   final File file;
+//   final HttpRequest request;
+//   Future<Uint8List> getBytes() => file.readAsBytes();
+//   Future<String> getString() => file.readAsString();
 
-  Future<Stream<List<int>>> sendFile() async {
-    return await file.openRead().pipe(request.response);
-  }
-}
+//   Future<Stream<List<int>>> sendFile() async {
+//     return await file.openRead().pipe(request.response);
+//   }
+// }
