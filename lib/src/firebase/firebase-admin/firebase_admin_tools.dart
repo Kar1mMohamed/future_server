@@ -4,7 +4,7 @@ import 'package:firebase_admin/firebase_admin.dart';
 class FirebaseAdminTools {
   FirebaseAdminTools._();
 
-  String? genereateCustomToken(
+  static String? genereateCustomToken(
       {required File serviceAccountFile, required String uid}) {
     try {
       var credential = Credentials.getApplicationFromServiceAccount(
