@@ -215,8 +215,6 @@ class Credentials {
           'Failed to parse contents of the credentials file as an object: $error');
     }
   }
-
-  String? get privateKey {}
 }
 
 /// Interface which provides Google OAuth2 access tokens used to authenticate

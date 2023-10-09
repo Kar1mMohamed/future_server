@@ -277,10 +277,7 @@ class FutureServerController extends GetServerController {
     _server?.listen(
       (req) {
         var requestHeaders = req.headers;
-        requestHeaders.forEach((name, values) {
-          var newvalues = values.map((e) => e.toLowerCase());
-          requestHeaders.set(name, newvalues);
-        });
+
         if (useLog) fs.log('Method ${req.method} on ${req.uri}');
         if (isLogEnable) {
           fs.writeToLog('Method ${req.method} on ${req.uri}');
