@@ -1,14 +1,19 @@
+import 'package:future_server/future_server.dart';
+
 class ServerResponse<T> {
   final int statusCode;
-  final T body;
+  final T? body;
   final Map<String, String>? headers;
   final Future<void> Function()? onDone;
+  final FutureSocket? socket;
 
-  ServerResponse(
-      {required this.statusCode,
-      required this.body,
-      this.headers,
-      this.onDone});
+  ServerResponse({
+    required this.statusCode,
+    this.body,
+    this.headers,
+    this.onDone,
+    this.socket,
+  });
 
   static json(Map<String, dynamic> body,
       {Map<String, String>? headers, int? statusCode}) {
@@ -20,6 +25,15 @@ class ServerResponse<T> {
   }
 
   // --------------------------------------------------------------------------------------------------------- //
+
+  factory ServerResponse.socket(
+      {required FutureSocket socket, Map<String, String>? headers}) {
+    return ServerResponse(
+      statusCode: 200,
+      socket: socket,
+      headers: headers,
+    );
+  }
 
   factory ServerResponse.ok(T body, {Map<String, String>? headers}) {
     return ServerResponse(statusCode: 200, body: body, headers: headers ?? {});
