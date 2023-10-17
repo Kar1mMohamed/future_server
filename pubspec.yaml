@@ -6,7 +6,8 @@ environment:
   sdk: ">=2.18.2 <4.0.0"
 
 dependencies:
-  get_server: ^1.2.1
+  get_server: 
+    path: packages/get_server-1.2.1
   galileo_mysql: ^3.0.0
   hive: ^2.2.3
   jaguar_jwt: ^3.0.0

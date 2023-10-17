@@ -76,10 +76,10 @@ class _BaseFuturerWidget extends SenderWidget {
           }
         } else if (responseValue.socket != null) {
           var socketModule = responseValue.socket!;
-          var event = context.getSocket;
+          var socket = context.getSocket;
 
-          if (event == null) {
-            // the request method is not a socket
+          if (socket == null) {
+            // socket request method is not a socket
             context.request.response!.status(400);
             context.request.response!.sendJson({
               'status': 'failed',
@@ -89,27 +89,39 @@ class _BaseFuturerWidget extends SenderWidget {
           }
 
           // IMPORTANT TO MAKE SOCKET WORK
-          event.rawSocket.done.then((value) {
-            event = null;
+          socket.rawSocket.done.then((value) {
+            socket = null;
           });
 
-          event!.onOpen((val) {
+          socket?.onOpen((val) {
             socketModule.id = val.id.toString();
-            socketModule._setGetSocket(event!);
+            socketModule._setGetSocket(socket!);
             FutureSocket.sockets.add(socketModule);
+            if (socketModule.onOpenSocket == null) return;
             socketModule.onOpenSocket!(socketModule);
           });
 
-          event!.onMessage((val) {
-            var message = socketJsonDecode(val);
-            socketModule.onMessageSocket!(message, socketModule);
+          socket?.onMessage((val) {
+            if (socketModule.onMessageSocket == null) return;
+            if (val == null) return;
+            if (val == 'ping') return;
+            try {
+              var message = socketJsonDecode(val);
+              if (message['event'] == 'ping') return;
+              socketModule.onMessageSocket!(message, socketModule);
+            } catch (e) {
+              print('Socket Error OnMessage: $e');
+            }
           });
 
-          event!.onClose((val) {
+          socket?.onClose((val) {
+            FutureSocket.sockets.remove(socketModule);
+            if (socketModule.onCloseSocket == null) return;
             socketModule.onCloseSocket!(val);
           });
 
-          event!.onError((val) {
+          socket?.onError((val) {
+            if (socketModule.onErrorSocket == null) return;
             socketModule.onErrorSocket!(val);
           });
         }
@@ -185,11 +197,11 @@ class FutureSocket {
   }
 }
 
-Map<String, dynamic>? socketJsonDecode(String message) {
+Map<String, dynamic> socketJsonDecode(dynamic message) {
   try {
     return json.decode(message);
   } catch (e) {
     print('Invalid json $message');
-    return null;
+    return {};
   }
 }

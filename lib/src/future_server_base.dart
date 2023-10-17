@@ -293,9 +293,12 @@ class FutureServerController extends GetServerController {
             req.response.close();
           }
         }
+
         if (route != null) {
+          var isNeededAuth = route.needAuth;
+
           var authHeader = requestHeaders['authorization']?[0];
-          if (authHeader != null) {
+          if (isNeededAuth && authHeader != null) {
             _authenticatedRouteHandler(req, route, authHeader);
           } else {
             route.handle(req);
