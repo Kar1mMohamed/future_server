@@ -7,8 +7,8 @@ class FirebaseAdminTools {
   static String? genereateCustomToken(
       {required File serviceAccountFile, required String uid}) {
     try {
-      var credential = Credentials.getApplicationFromServiceAccount(
-          File('service-account.json'));
+      var credential =
+          Credentials.getApplicationFromServiceAccount(serviceAccountFile);
 
       if (credential == null) {
         throw Exception('Credential is null');
