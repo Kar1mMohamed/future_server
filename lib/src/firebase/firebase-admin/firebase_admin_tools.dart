@@ -27,4 +27,29 @@ class FirebaseAdminTools {
       return null;
     }
   }
+
+  Future<void> verifyUserEmail(
+      {required String uid, required File serviceAccountFile}) async {
+    try {
+      var credential =
+          Credentials.getApplicationFromServiceAccount(serviceAccountFile);
+
+      if (credential == null) {
+        throw Exception('Credential is null');
+      }
+
+      Credentials.setApplicationDefaultCredential(credential);
+
+      var app = FirebaseAdmin.instance
+          .initializeApp(AppOptions(credential: credential));
+
+      var user = await app.auth().getUser(uid);
+
+      if (user.emailVerified ?? false) return;
+
+      await app.auth().updateUser(uid, emailVerified: true);
+    } catch (e) {
+      print(e);
+    }
+  }
 }
