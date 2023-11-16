@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:future_server/modules/payload_validation_module.dart';
 import 'package:get_server/get_server.dart';
 
 import '../future_server.dart';
@@ -15,28 +16,39 @@ abstract class FutureResponse<T> extends GetView<T> {
 
   ContextResponse? get requestResponse => _futureContext.response;
 
-  Future<Map?> payloadWithValidatedKeys(List<String> keys) async {
+  Future<PayloadWithValidationResponse> payloadWithValidatedKeys(
+      List<String> keys) async {
+    var validationModule = PayloadWithValidationResponse();
     try {
-      var payload = await request.payload();
-      if (payload == null) return {'required': keys};
+      Map? payload = await request.payload();
+      validationModule.payload = payload;
+      if (payload == null) {
+        validationModule.requiredKeys = keys;
+        return validationModule;
+      }
+
       var payloadKeys = payload.keys.toList();
 
-      var noValidatedKeys = <String>[];
+      var requiredKeys = <String>[];
 
       for (var key in keys) {
         if (!payloadKeys.contains(key)) {
-          noValidatedKeys.add(key);
+          requiredKeys.add(key);
         }
       }
 
-      if (noValidatedKeys.isNotEmpty) {
-        return {'required': noValidatedKeys};
+      if (requiredKeys.isNotEmpty) {
+        validationModule.requiredKeys = requiredKeys;
+        return validationModule;
       }
 
-      return payload;
+      validationModule.isValid = true;
+      validationModule.requiredKeys = [];
+
+      return validationModule;
     } catch (e) {
       fs.log(e.toString());
-      return {'required': key};
+      return PayloadWithValidationResponse(isValid: false, requiredKeys: keys);
     }
   }
 
