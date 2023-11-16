@@ -57,19 +57,9 @@ class FirebaseAdmin {
       );
     } else if (_apps.containsKey(name)) {
       if (name == defaultAppName) {
-        throw FirebaseAppError.duplicateApp(
-          'The default Firebase app already exists. This means you called initializeApp() '
-          'more than once without providing an app name as the second argument. In most cases '
-          'you only need to call initializeApp() once. But if you do want to initialize '
-          'multiple apps, pass a second argument to initializeApp() to give each app a unique '
-          'name.',
-        );
+        return _apps[name]!;
       } else {
-        throw FirebaseAppError.duplicateApp(
-          'Firebase app named "$name" already exists. This means you called initializeApp() '
-          'more than once with the same app name as the second argument. Make sure you provide a '
-          'unique name every time you call initializeApp().',
-        );
+        return _apps[name]!;
       }
     }
 
