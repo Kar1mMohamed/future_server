@@ -15,6 +15,31 @@ abstract class FutureResponse<T> extends GetView<T> {
 
   ContextResponse? get requestResponse => _futureContext.response;
 
+  Future<Map?> payloadWithValidatedKeys(List<String> keys) async {
+    try {
+      var payload = await request.payload();
+      if (payload == null) return {'required': keys};
+      var payloadKeys = payload.keys.toList();
+
+      var noValidatedKeys = <String>[];
+
+      for (var key in keys) {
+        if (!payloadKeys.contains(key)) {
+          noValidatedKeys.add(key);
+        }
+      }
+
+      if (noValidatedKeys.isNotEmpty) {
+        return {'required': noValidatedKeys};
+      }
+
+      return payload;
+    } catch (e) {
+      fs.log(e.toString());
+      return {'required': key};
+    }
+  }
+
   String? get berearToken {
     final authorization = request.header('authorization')?[0];
     if (authorization != null) {

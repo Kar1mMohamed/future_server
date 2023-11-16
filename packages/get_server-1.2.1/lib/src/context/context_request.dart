@@ -86,8 +86,8 @@ class ContextRequest {
   /// Get the payload (body)
   ///
   /// If don't have the contentType of payload will return null
-  Future<Map?> payload({Encoding encoder = utf8}) async {
-    var completer = Completer<Map>();
+  Future<dynamic?> payload({Encoding encoder = utf8}) async {
+    var completer = Completer<dynamic>();
 
     if (!hasContentType) return null;
 
