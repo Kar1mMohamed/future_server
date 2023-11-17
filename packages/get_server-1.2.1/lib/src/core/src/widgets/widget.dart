@@ -28,7 +28,7 @@ abstract class BuildContext {
 
   String? param(String name) => request.param(name);
 
-  Future<Map?> payload({Encoding encoder = utf8});
+  Future<dynamic> payload({Encoding encoder = utf8});
 }
 
 @immutable
@@ -127,7 +127,7 @@ abstract class Element implements BuildContext {
   String? param(String name) => request.param(name);
 
   @override
-  Future<Map?> payload({Encoding encoder = utf8}) =>
+  Future<dynamic> payload({Encoding encoder = utf8}) =>
       request.payload(encoder: encoder);
 }
 

@@ -149,10 +149,11 @@ class RouteParser {
     dynamic path, {
     List<String?>? keys,
   }) {
+    String pathAsString = path;
     String stringPath = path;
     keys ??= [];
     if (path is RegExp) {
-      return {'regexp': path, 'keys': keys};
+      return {'regexp': path, 'keys': keys, 'pathAsString': pathAsString};
     } else if (path is List) {
       stringPath = '(${path.join('|')})';
     }
@@ -178,7 +179,11 @@ class RouteParser {
       return replace.toString();
     }).replaceAll('//', '/');
 
-    return {'regexp': RegExp('^$stringPath\$'), 'keys': keys};
+    return {
+      'regexp': RegExp('^$stringPath\$'),
+      'keys': keys,
+      'pathAsString': pathAsString
+    };
   }
 
   static Map<String?, String?> parseParams(String path, Map routePath) {

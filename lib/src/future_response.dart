@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:future_server/modules/payload_validation_module.dart';
 import 'package:get_server/get_server.dart';
 
 import '../future_server.dart';
@@ -14,6 +15,42 @@ abstract class FutureResponse<T> extends GetView<T> {
   }
 
   ContextResponse? get requestResponse => _futureContext.response;
+
+  Future<PayloadWithValidationResponse> payloadWithValidatedKeys(
+      List<String> keys) async {
+    var validationModule = PayloadWithValidationResponse();
+    try {
+      Map? payload = await request.payload();
+      validationModule.payload = payload;
+      if (payload == null) {
+        validationModule.requiredKeys = keys;
+        return validationModule;
+      }
+
+      var payloadKeys = payload.keys.toList();
+
+      var requiredKeys = <String>[];
+
+      for (var key in keys) {
+        if (!payloadKeys.contains(key)) {
+          requiredKeys.add(key);
+        }
+      }
+
+      if (requiredKeys.isNotEmpty) {
+        validationModule.requiredKeys = requiredKeys;
+        return validationModule;
+      }
+
+      validationModule.isValid = true;
+      validationModule.requiredKeys = [];
+
+      return validationModule;
+    } catch (e) {
+      fs.log(e.toString());
+      return PayloadWithValidationResponse(isValid: false, requiredKeys: keys);
+    }
+  }
 
   String? get berearToken {
     final authorization = request.header('authorization')?[0];

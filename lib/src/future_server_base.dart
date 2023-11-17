@@ -343,12 +343,31 @@ class FutureServerController extends GetServerController {
       var token = authHeader.split(' ')[1];
       var claim = TokenUtil.getClaims(token);
       var scopes = _getScsopes(claim);
-      if (scopes.contains(req.requestedUri.path)) {
+
+      var pathAsString = route.path['pathAsString'] as String;
+      // var requestedPath = req.uri.toString();
+
+      // check if string has (:dynamic)
+      bool isHasVariable = pathAsString.contains(RegExp(r'\/\:[a-zA-Z]+'));
+      fs.log('isHasVariable $isHasVariable');
+
+      //  (/admin/classrooms/:id)
+      if (isHasVariable) {
+        pathAsString = pathAsString.replaceAll(RegExp(r'\/\:[a-zA-Z]+'), '');
+      }
+
+      fs.log('pathAsString $pathAsString');
+
+      if (scopes.contains(pathAsString)) {
         route.handle(req);
       } else {
         fs.log('not allowed');
         _onTokenNotAllowed(req);
       }
+
+      // if (route.path[''] == ) {
+      //   route.handle(req);
+      // }
     } catch (e) {
       fs.log('[Authentcation] $e');
       _onTokenNotAllowed(req);
