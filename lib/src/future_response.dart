@@ -20,14 +20,31 @@ abstract class FutureResponse<T> extends GetView<T> {
       List<String> keys) async {
     var validationModule = PayloadWithValidationResponse();
     try {
-      Map? payload = await request.payload();
+      var payload = await request.payload();
       validationModule.payload = payload;
       if (payload == null) {
         validationModule.requiredKeys = keys;
         return validationModule;
       }
 
-      var payloadKeys = payload.keys.toList();
+      List<String> payloadKeys = [];
+
+      fs.log(payload.runtimeType.toString());
+
+      if (payload is Map) {
+        fs.log('payload is Map');
+        payloadKeys = payload.keys.map((e) => e.toString()).toList();
+      } else if (payload is List) {
+        for (Map entry in payload) {
+          payloadKeys.addAll(entry.keys.map((e) => e.toString()).toList());
+        }
+      } else {
+        throw Exception('Invalid payload type');
+      }
+
+      if (payloadKeys.isEmpty) {
+        throw Exception('Invalid payload type');
+      }
 
       var requiredKeys = <String>[];
 
@@ -39,11 +56,13 @@ abstract class FutureResponse<T> extends GetView<T> {
 
       if (requiredKeys.isNotEmpty) {
         validationModule.requiredKeys = requiredKeys;
+        validationModule.payload = payload;
         return validationModule;
       }
 
       validationModule.isValid = true;
       validationModule.requiredKeys = [];
+      validationModule.payload = payload;
 
       return validationModule;
     } catch (e) {
@@ -169,10 +188,7 @@ class _BaseFuturerWidget extends SenderWidget {
       context.request.response!.status(500);
       context.request.response!.sendJson({
         'status': 'failed',
-        if (fs.debugMode)
-          'message': error.toString()
-        else
-          'message': 'Internal Server Error',
+        'message': error.toString(),
         if (fs.debugMode) 'stackTrace': stackTrace.toString(),
       });
     });

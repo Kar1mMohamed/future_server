@@ -107,6 +107,9 @@ class UserRecord {
             passwordSalt: map['passwordSalt'],
             customClaims: (() {
               try {
+                if (map['customAttributes'] == null) {
+                  return null;
+                }
                 return json.decode(map['customAttributes']);
               } catch (e) {
                 return null;
