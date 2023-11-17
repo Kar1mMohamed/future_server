@@ -132,10 +132,7 @@ class _BaseFuturerWidget extends SenderWidget {
       context.request.response!.status(500);
       context.request.response!.sendJson({
         'status': 'failed',
-        if (fs.debugMode)
-          'message': error.toString()
-        else
-          'message': 'Internal Server Error',
+        'message': error.toString(),
         if (fs.debugMode) 'stackTrace': stackTrace.toString(),
       });
     });

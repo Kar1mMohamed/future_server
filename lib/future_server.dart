@@ -21,3 +21,4 @@ export 'src/server/server_impl.dart';
 export 'src/authentication_system/data/future_auth.dart';
 export 'src/firebase/firebase-admin/firebase_admin_tools.dart';
 export 'modules/future_socket.dart';
+export 'package:firebase_admin/firebase_admin.dart';
