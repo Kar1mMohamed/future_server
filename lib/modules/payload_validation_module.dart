@@ -1,5 +1,5 @@
 class PayloadWithValidationResponse {
-  Map? payload;
+  dynamic payload;
   bool isValid = false;
   List<String> requiredKeys = [];
 
