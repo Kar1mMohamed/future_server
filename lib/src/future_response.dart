@@ -4,6 +4,7 @@ import 'package:future_server/modules/payload_validation_module.dart';
 import 'package:get_server/get_server.dart';
 
 import '../future_server.dart';
+import '../modules/future_exception.dart';
 
 abstract class FutureResponse<T> extends GetView<T> {
   Future<ServerResponse> response();
@@ -185,6 +186,19 @@ class _BaseFuturerWidget extends SenderWidget {
         responseValue.onDone?.call();
       },
     ).onError((error, stackTrace) {
+      if (error is FutureException) {
+        context.request.response!.status(error.statusCode ?? 500);
+        if (error.body is Map) {
+          context.request.response!.sendJson(error.body);
+          return;
+        }
+        context.request.response!.sendJson({
+          'status': 'Server Error',
+          'message': error.body.toString(),
+          if (fs.debugMode) 'stackTrace': stackTrace.toString(),
+        });
+        return;
+      }
       context.request.response!.status(500);
       context.request.response!.sendJson({
         'status': 'failed',
