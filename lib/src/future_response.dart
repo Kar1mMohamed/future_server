@@ -245,8 +245,12 @@ class FutureSocket {
   }
 
   void sendJson(Map<String, dynamic> message) {
-    var jsonString = json.encode(message);
-    _getSocket!.send(jsonString);
+    try {
+      var jsonString = json.encode(message);
+      _getSocket!.send(jsonString);
+    } catch (e) {
+      sockets.remove(this);
+    }
   }
 }
 
