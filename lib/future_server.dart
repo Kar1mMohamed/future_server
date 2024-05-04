@@ -23,3 +23,4 @@ export 'src/firebase/firebase-admin/firebase_admin_tools.dart';
 export 'modules/future_socket.dart';
 export 'package:firebase_admin/firebase_admin.dart';
 export 'modules/future_exception.dart';
+export 'package:firebase_admin/src/auth/user_record.dart';
