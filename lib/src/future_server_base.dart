@@ -277,6 +277,7 @@ class FutureServerController extends GetServerController {
     _server?.listen(
       (req) {
         if (req.method.toLowerCase() == 'options') {
+          addCorsHeaders(req.response, corsUrl);
           var msg = {'status': 'ok'};
           req.response.write(json.encode(msg));
           req.response.close();
