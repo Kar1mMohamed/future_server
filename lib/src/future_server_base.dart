@@ -276,6 +276,13 @@ class FutureServerController extends GetServerController {
 
     _server?.listen(
       (req) {
+        if (req.method.toLowerCase() == 'options') {
+          var msg = {'status': 'ok'};
+          req.response.write(json.encode(msg));
+          req.response.close();
+          return;
+        }
+
         var requestHeaders = req.headers;
 
         if (useLog) fs.log('Method ${req.method} on ${req.uri}');
@@ -287,11 +294,11 @@ class FutureServerController extends GetServerController {
         route?.binding?.dependencies();
         if (cors) {
           addCorsHeaders(req.response, corsUrl);
-          if (req.method.toLowerCase() == 'options') {
-            var msg = {'status': 'ok'};
-            req.response.write(json.encode(msg));
-            req.response.close();
-          }
+          //   // if (req.method.toLowerCase() == 'options') {
+          //   //   var msg = {'status': 'ok'};
+          //   //   req.response.write(json.encode(msg));
+          //   //   req.response.close();
+          //   // }
         }
 
         if (route != null) {
