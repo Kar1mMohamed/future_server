@@ -88,17 +88,19 @@ abstract class FutureResponse<T> extends GetView<T> {
   Widget build(BuildContext context) {
     _futureContext.setContext(context);
 
-    if (context.request.method == 'OPTIONS') {
-      context.request.response!.header('Access-Control-Allow-Origin', '*');
-      context.request.response!.header(
-          'Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    // if (context.request.method == 'OPTIONS') {
+    //   context.request.response!.header('Access-Control-Allow-Origin', '*');
+    //   context.request.response!.header(
+    //       'Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
 
-      context.request.response!.sendJson({'msg': 'ok'});
+    //   context.request.response!.sendJson({'msg': 'ok'});
 
-      return WidgetEmpty();
-    } else {
-      return _BaseFuturerWidget(response());
-    }
+    //   return WidgetEmpty();
+    // }
+
+    //  else {
+    return _BaseFuturerWidget(response());
+    // }
   }
 }
 
