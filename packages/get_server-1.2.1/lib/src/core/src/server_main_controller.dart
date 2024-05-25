@@ -160,8 +160,17 @@ class GetServerController extends GetxController {
     response.headers.add('Access-Control-Allow-Origin', corsUrl);
     response.headers
         .add('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+
+    response.headers.add('Access-Control-Allow-Credentials', 'true');
+
+    response.headers.add('Access-Control-Max-Age', '1728000');
+
+    response.headers.add('Access-Control-Expose-Headers', 'x-access-token');
+
     response.headers.add('Access-Control-Allow-Headers',
-        'access-control-allow-origin,content-type,x-access-token');
+        'Authorization, Content-Type, x-access-token, Origin, X-Requested-With, Accept, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Credentials, Access-Control-Max-Age, Access-Control-Expose-Headers, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers, x-api-key, x-requested-with, x-requested-by');
+
+    Get.log('Cors sent for $corsUrl');
   }
 
   void _onNotFound(HttpRequest req, Widget? onNotFound) {
