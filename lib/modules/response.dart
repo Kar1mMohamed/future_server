@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:future_server/future_server.dart';
 
 class ServerResponse<T> {
   final int statusCode;
-  final T? body;
+  final dynamic body;
   final Map<String, String>? headers;
   final Future<void> Function()? onDone;
   final FutureSocket? socket;
@@ -80,5 +82,13 @@ class ServerResponse<T> {
   factory ServerResponse.temporaryRedirect(T body,
       {Map<String, String>? headers}) {
     return ServerResponse(statusCode: 307, body: body, headers: headers ?? {});
+  }
+
+  factory ServerResponse.file(File file, {Map<String, String>? headers}) {
+    return ServerResponse(
+      statusCode: 200,
+      body: file,
+      headers: headers ?? {},
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:future_server/modules/payload_validation_module.dart';
 import 'package:get_server/get_server.dart';
@@ -130,6 +131,8 @@ class _BaseFuturerWidget extends SenderWidget {
             // print('value is Map<String, dynamic>');
           } else if (finalValue is Future<dynamic>) {
             // print('value is Future<dynamic>');
+          } else if (finalValue is File) {
+            context.request.response!.sendFile(finalValue.path);
           } else {
             // print('value is else');
           }
