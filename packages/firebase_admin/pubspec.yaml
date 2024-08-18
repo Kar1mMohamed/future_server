@@ -4,7 +4,7 @@ version: 0.2.0
 homepage: https://github.com/appsup-dart/firebase_admin
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   clock: ^1.1.0
@@ -18,13 +18,17 @@ dependencies:
   http: ^1.1.0
   crypto_keys: ^0.3.0
   collection: ^1.15.0
-  gcloud: ^0.8.0
+  gcloud: ^0.8.12
   dart_jsonwebtoken: ^2.11.0
+
+
+dependency_overrides:
+  googleapis: ^13.2.0
 
 dev_dependencies:
   test: ^1.17.8
   fake_async: ^1.2.0
-  lints: ^2.0.0
+  lints: ^4.0.0
   mockito: ^5.0.10
 
 false_secrets:
