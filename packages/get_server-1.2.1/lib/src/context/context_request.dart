@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:mime/mime.dart';
-
 import '../../get_server.dart';
 import 'context_response.dart';
 
@@ -152,6 +150,8 @@ class ContextRequest {
         var file = File('${tempDirectory.path}/${parameters?['filename']}');
         var sink = file.openWrite();
 
+        log('Created a temp file for multipart ${file.path}', name: 'FS');
+
         // wait for formdata listen to complete
         await for (var data in formData) {
           if (formData.contentType != null) {
@@ -173,6 +173,7 @@ class ContextRequest {
         }
 
         file.delete();
+        log('Deleted a temp file for multipart ${file.path}', name: 'FS');
       }
       completer.complete(payload);
     } else if (isMime('application/json')) {
