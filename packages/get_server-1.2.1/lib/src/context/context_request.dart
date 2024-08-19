@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:mime/mime.dart';
 
@@ -103,24 +104,52 @@ class ContextRequest {
     } else if (isMime('multipart/form-data', loose: true)) {
       var boundary = _request.headers.contentType!.parameters['boundary']!;
       final payload = {};
-      MimeMultipartTransformer(boundary)
-          .bind(_request)
-          .map(HttpMultipartFormData.parse)
-          .listen((formData) {
+      // MimeMultipartTransformer(boundary)
+      //     .bind(_request)
+      //     .map(HttpMultipartFormData.parse)
+      //     .listen((formData) {
+      //   var parameters = formData.contentDisposition.parameters;
+      //   formData.listen((data) {
+      //     MultipartUpload? dataa;
+      //     if (formData.contentType != null) {
+      //       dataa = MultipartUpload(
+      //         parameters?['filename'],
+      //         formData.contentType!.mimeType,
+      //         formData.contentTransferEncoding,
+      //         data,
+      //       );
+      //     }
+      //     payload[parameters?['name']] = dataa;
+      //   });
+      // }, onDone: () {
+      //   completer.complete(payload);
+      // });
+
+      final transformer = MimeMultipartTransformer(boundary);
+      final parts = await transformer.bind(_request).toList();
+      for (var part in parts) {
+        final formData = HttpMultipartFormData.parse(part);
         var parameters = formData.contentDisposition.parameters;
-        formData.listen((data) {
-          if (formData.contentType != null) {
-            data = MultipartUpload(
-                parameters?['filename'],
-                formData.contentType!.mimeType,
-                formData.contentTransferEncoding,
-                data);
-          }
-          payload[parameters?['name']] = data;
+        var data = await formData.fold<List<int>>([], (prev, element) {
+          prev.addAll(element);
+          return prev;
         });
-      }, onDone: () {
-        completer.complete(payload);
-      });
+
+        // convert data to Uint8List
+        data = Uint8List.fromList(data);
+
+        MultipartUpload? dataa;
+        if (formData.contentType != null) {
+          dataa = MultipartUpload(
+            parameters?['filename'],
+            formData.contentType!.mimeType,
+            formData.contentTransferEncoding,
+            data,
+          );
+        }
+        payload[parameters?['name']] = dataa;
+      }
+      completer.complete(payload);
     } else if (isMime('application/json')) {
       try {
         final content = await utf8.decodeStream(_request);
