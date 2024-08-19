@@ -130,24 +130,39 @@ class ContextRequest {
       for (var part in parts) {
         final formData = HttpMultipartFormData.parse(part);
         var parameters = formData.contentDisposition.parameters;
-        var data = await formData.fold<List<int>>([], (prev, element) {
-          prev.addAll(element);
-          return prev;
-        });
+        // var data = await formData.fold<List<int>>([], (prev, element) {
+        //   prev.addAll(element);
+        //   return prev;
+        // });
 
-        // convert data to Uint8List
-        data = Uint8List.fromList(data);
+        //  MultipartUpload? dataa;
+        // if (formData.contentType != null) {
+        //   dataa = MultipartUpload(
+        //     parameters?['filename'],
+        //     formData.contentType!.mimeType,
+        //     formData.contentTransferEncoding,
+        //     data,
+        //   );
+        // }
+        // payload[parameters?['name']] = dataa;
 
-        MultipartUpload? dataa;
+        List<int> bytes = [];
+
+        // wait for formdata listen to complete
+        await for (var data in formData) {
+          if (formData.contentType != null) {
+            bytes.addAll(data);
+          }
+        }
+
         if (formData.contentType != null) {
-          dataa = MultipartUpload(
+          payload[parameters?['name']] = MultipartUpload(
             parameters?['filename'],
             formData.contentType!.mimeType,
             formData.contentTransferEncoding,
-            data,
+            bytes,
           );
         }
-        payload[parameters?['name']] = dataa;
       }
       completer.complete(payload);
     } else if (isMime('application/json')) {
