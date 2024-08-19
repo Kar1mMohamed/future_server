@@ -146,23 +146,33 @@ class ContextRequest {
         // }
         // payload[parameters?['name']] = dataa;
 
-        List<int> bytes = [];
+        // print(Directory.current.path);
+
+        var tempDirectory = Directory.systemTemp.createTempSync();
+        var file = File('${tempDirectory.path}/${parameters?['filename']}');
+        var sink = file.openWrite();
 
         // wait for formdata listen to complete
         await for (var data in formData) {
           if (formData.contentType != null) {
-            bytes.addAll(data);
+            // bytes.addAll(data);
+            sink.add(data);
           }
         }
+
+        await sink.flush();
+        await sink.close();
 
         if (formData.contentType != null) {
           payload[parameters?['name']] = MultipartUpload(
             parameters?['filename'],
             formData.contentType!.mimeType,
             formData.contentTransferEncoding,
-            bytes,
+            await file.readAsBytes(),
           );
         }
+
+        file.delete();
       }
       completer.complete(payload);
     } else if (isMime('application/json')) {
