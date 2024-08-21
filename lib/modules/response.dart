@@ -91,4 +91,13 @@ class ServerResponse<T> {
       headers: headers ?? {},
     );
   }
+
+  factory ServerResponse.redirect(String location,
+      {Map<String, String>? headers}) {
+    return ServerResponse(
+      statusCode: 302,
+      body: null,
+      headers: headers ?? {'Location': location},
+    );
+  }
 }

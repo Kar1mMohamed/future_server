@@ -134,7 +134,9 @@ class _BaseFuturerWidget extends SenderWidget {
           } else if (finalValue is File) {
             context.request.response!.sendFile(finalValue.path);
           } else {
-            // print('value is else');
+            print('value is else');
+
+            return null;
           }
         } else if (responseValue.socket != null) {
           var socketModule = responseValue.socket!;
@@ -186,6 +188,12 @@ class _BaseFuturerWidget extends SenderWidget {
             if (socketModule.onErrorSocket == null) return;
             socketModule.onErrorSocket!(val);
           });
+        } else if (responseValue.body == null &&
+            responseValue.headers?['Location'] != null) {
+          context.request.response!
+              .redirect(responseValue.headers!['Location']!);
+        } else {
+          // print('responseValue.body is null');
         }
 
         responseValue.onDone?.call();
