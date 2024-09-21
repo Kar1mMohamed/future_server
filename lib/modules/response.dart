@@ -100,4 +100,12 @@ class ServerResponse<T> {
       headers: headers ?? {'Location': location},
     );
   }
+
+  factory ServerResponse.html(String html, {Map<String, String>? headers}) {
+    return ServerResponse(
+      statusCode: 200,
+      body: html,
+      headers: headers ?? {'Content-Type': 'text/html'},
+    );
+  }
 }

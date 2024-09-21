@@ -85,6 +85,15 @@ class ContextResponse {
     return this;
   }
 
+  Future sendFileStream(Stream<List<int>> stream) {
+    return stream.pipe(_response).then((_) => close());
+  }
+
+  ContextResponse write(data) {
+    _response.write(data);
+    return this;
+  }
+
   ContextResponse? attachment(String filename) {
     return set('Content-Disposition', 'attachment; filename="$filename"');
   }

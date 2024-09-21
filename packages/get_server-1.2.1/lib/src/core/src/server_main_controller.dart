@@ -168,7 +168,7 @@ class GetServerController extends GetxController {
     response.headers.add('Access-Control-Expose-Headers', 'x-access-token');
 
     response.headers.add('Access-Control-Allow-Headers',
-        'Authorization, Content-Type, x-access-token, Origin, X-Requested-With, Accept, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Credentials, Access-Control-Max-Age, Access-Control-Expose-Headers, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers, x-api-key, x-requested-with, x-requested-by');
+        'Authorization, Content-Type, x-access-token, Origin, X-Requested-With, Accept, Access-Control-Allow-Origin, Access-Control-Allow-Methods, Access-Control-Allow-Credentials, Access-Control-Max-Age, Access-Control-Expose-Headers, Access-Control-Allow-Headers, Access-Control-Request-Method, Access-Control-Request-Headers, x-api-key, x-requested-with, x-requested-by, Content-Range, Content-Range-ID, Content-Range-IsLast');
 
     Get.log('Cors sent for $corsUrl');
   }

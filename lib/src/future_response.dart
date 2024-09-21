@@ -5,7 +5,6 @@ import 'package:future_server/modules/payload_validation_module.dart';
 import 'package:get_server/get_server.dart';
 
 import '../future_server.dart';
-import '../modules/future_exception.dart';
 
 abstract class FutureResponse<T> extends GetView<T> {
   Future<ServerResponse> response();
@@ -117,12 +116,19 @@ class _BaseFuturerWidget extends SenderWidget {
           context.request.response!.status(responseValue.statusCode);
           var finalValue = responseValue.body;
           // print('finalValue type: ${finalValue.runtimeType}');
+          responseValue.headers?.forEach((key, value) {
+            context.request.response!.header(key, value);
+          });
 
           if (finalValue is String) {
-            // finalValue = {'msg': value};
-            // context.request.response!.sendJson(finalValue);
-            context.request.response!.send(finalValue);
+            // context.request.response!.send(finalValue);
             // print('value is String');
+
+            if (responseValue.headers?['Content-Type'] == 'text/html') {
+              context.request.response!.sendHtmlText(finalValue);
+            } else {
+              context.request.response!.sendJson(finalValue);
+            }
           } else if (finalValue is Map<dynamic, dynamic>) {
             context.request.response!.sendJson(finalValue);
             // print('value is Map<dynamic, dynamic>');

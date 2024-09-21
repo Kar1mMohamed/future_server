@@ -37,6 +37,13 @@ class ContextRequest {
   ContextRequest(this._request, this.requestMethod);
 
   List? header(String name) => _request.headers[name.toLowerCase()];
+  Map<String, String> get httpHeaders {
+    final map = <String, String>{};
+    _request.headers.forEach((key, value) {
+      map[key] = value.join(',');
+    });
+    return map;
+  }
 
   bool accepts(String type) => _request.headers[HttpHeaders.acceptHeader]!
       .where((name) => name.split(',').indexOf(type) > 0)
