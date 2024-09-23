@@ -22,7 +22,7 @@ class ServerResponse<T> {
     return ServerResponse(
       statusCode: statusCode ?? 200,
       body: body,
-      headers: headers ?? {},
+      headers: headers ?? {'Content-Type': 'application/json'},
     );
   }
 
@@ -106,6 +106,22 @@ class ServerResponse<T> {
       statusCode: 200,
       body: html,
       headers: headers ?? {'Content-Type': 'text/html'},
+    );
+  }
+
+  factory ServerResponse.text(String text, {Map<String, String>? headers}) {
+    return ServerResponse(
+      statusCode: 200,
+      body: text,
+      headers: headers ?? {'Content-Type': 'text/plain'},
+    );
+  }
+
+  factory ServerResponse.m3u8(String m3u8, {Map<String, String>? headers}) {
+    return ServerResponse(
+      statusCode: 200,
+      body: m3u8,
+      headers: headers ?? {'Content-Type': 'application/x-mpegURL'},
     );
   }
 }

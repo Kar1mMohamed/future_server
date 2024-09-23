@@ -112,13 +112,14 @@ class _BaseFuturerWidget extends SenderWidget {
   Widget build(BuildContext context) {
     response.then(
       (responseValue) {
+        responseValue.headers?.forEach((key, value) {
+          context.request.response!.header(key, value);
+        });
+
         if (responseValue.body != null) {
           context.request.response!.status(responseValue.statusCode);
           var finalValue = responseValue.body;
           // print('finalValue type: ${finalValue.runtimeType}');
-          responseValue.headers?.forEach((key, value) {
-            context.request.response!.header(key, value);
-          });
 
           if (finalValue is String) {
             // context.request.response!.send(finalValue);
@@ -127,14 +128,16 @@ class _BaseFuturerWidget extends SenderWidget {
             if (responseValue.headers?['Content-Type'] == 'text/html') {
               context.request.response!.sendHtmlText(finalValue);
             } else {
-              context.request.response!.sendJson(finalValue);
+              context.request.response!.send(finalValue);
             }
           } else if (finalValue is Map<dynamic, dynamic>) {
-            context.request.response!.sendJson(finalValue);
-            // print('value is Map<dynamic, dynamic>');
+            context.request.response!
+                .header('Content-Type', 'application/json');
+            context.request.response!.send(jsonEncode(finalValue));
           } else if (finalValue is Map<String, dynamic>) {
-            context.request.response!.sendJson(finalValue);
-            // print('value is Map<String, dynamic>');
+            context.request.response!
+                .header('Content-Type', 'application/json');
+            context.request.response!.send(jsonEncode(finalValue));
           } else if (finalValue is Future<dynamic>) {
             // print('value is Future<dynamic>');
           } else if (finalValue is File) {
