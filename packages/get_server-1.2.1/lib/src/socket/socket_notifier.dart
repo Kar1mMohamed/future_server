@@ -30,7 +30,7 @@ class SocketNotifier {
   }
 
   void notifyClose(Close err, GetSocket newWs) {
-    Get.log('Socket ${newWs.hashCode} is been disposed');
+    Get.log('Socket ${newWs.id} is been disposed');
 
     for (var item in _onCloses!) {
       item(err);

@@ -169,6 +169,7 @@ class _BaseFuturerWidget extends SenderWidget {
           });
 
           socket?.onOpen((val) {
+            fs.log('Socket oppened $socketId');
             socketModule.id = socketId;
             socketModule._setGetSocket(socket!);
             FutureSocket.sockets.add(socketModule);
@@ -189,15 +190,15 @@ class _BaseFuturerWidget extends SenderWidget {
             }
           });
 
-          socket?.onClose((val) {
+          socket?.onClose((close) {
             FutureSocket.sockets.remove(socketModule);
             if (socketModule.onCloseSocket == null) return;
-            socketModule.onCloseSocket!(val);
+            socketModule.onCloseSocket!(socketModule);
           });
 
-          socket?.onError((val) {
+          socket?.onError((close) {
             if (socketModule.onErrorSocket == null) return;
-            socketModule.onErrorSocket!(val);
+            socketModule.onErrorSocket!(close);
           });
         } else if (responseValue.body == null &&
             responseValue.headers?['Location'] != null) {
@@ -263,8 +264,8 @@ class FutureSocket {
   final void Function(Map<String, dynamic>? message, FutureSocket socket)?
       onMessageSocket;
   final void Function(FutureSocket message)? onOpenSocket;
-  final void Function(dynamic message)? onCloseSocket;
-  final void Function(dynamic message)? onErrorSocket;
+  final void Function(FutureSocket socket)? onCloseSocket;
+  final void Function(Close close)? onErrorSocket;
 
   FutureSocket({
     this.id,
