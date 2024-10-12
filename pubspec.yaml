@@ -7,12 +7,12 @@ environment:
 
 dependencies:
   get_server: 
-    path: packages/get_server-1.2.1
+    path: ./packages/get_server-1.2.1
   galileo_mysql: ^3.0.0
   hive: ^2.2.3
   jaguar_jwt: ^3.0.0
   firebase_admin:
-    path: packages/firebase_admin
+    path: ./packages/firebase_admin
 
 dev_dependencies:
   lints: ^4.0.0

@@ -161,13 +161,15 @@ class _BaseFuturerWidget extends SenderWidget {
             return;
           }
 
+          final socketId = socket.id;
+
           // IMPORTANT TO MAKE SOCKET WORK
           socket.rawSocket.done.then((value) {
             socket = null;
           });
 
           socket?.onOpen((val) {
-            socketModule.id = val.id.toString();
+            socketModule.id = socketId;
             socketModule._setGetSocket(socket!);
             FutureSocket.sockets.add(socketModule);
             if (socketModule.onOpenSocket == null) return;
@@ -255,7 +257,7 @@ class FutureResponseWidget extends FutureResponse {
 class FutureSocket {
   static List<FutureSocket> sockets = <FutureSocket>[];
 
-  String? id;
+  int? id;
   GetSocket? _getSocket;
 
   final void Function(Map<String, dynamic>? message, FutureSocket socket)?
