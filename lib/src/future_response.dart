@@ -133,11 +133,11 @@ class _BaseFuturerWidget extends SenderWidget {
           } else if (finalValue is Map<dynamic, dynamic>) {
             context.request.response!
                 .header('Content-Type', 'application/json');
-            context.request.response!.send(jsonEncode(finalValue));
+            context.request.response!.sendJson(finalValue);
           } else if (finalValue is Map<String, dynamic>) {
             context.request.response!
                 .header('Content-Type', 'application/json');
-            context.request.response!.send(jsonEncode(finalValue));
+            context.request.response!.sendJson(finalValue);
           } else if (finalValue is Future<dynamic>) {
             // print('value is Future<dynamic>');
           } else if (finalValue is File) {
